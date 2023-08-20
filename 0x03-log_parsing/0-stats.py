@@ -57,4 +57,5 @@ try:
 
 except KeyboardInterrupt:
     print_data()
-    sys.exit()
+    raise
+print_data()
