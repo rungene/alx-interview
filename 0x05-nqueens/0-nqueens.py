@@ -4,60 +4,45 @@
 """
 import sys
 
-nqueens = None
-if len(sys.argv) < 2:
-    print('Usage: {} <queens'.format(sys.argv[0]))
-    sys.exit(1)
 
-queens = sys.argv[1]
-try:
-    queens = int(queens)
-    if queens < 4:
-        print('{} must be at least 4'.format(queens))
-        sys.exit(1)
-    nqueens = queens
-except ValueError:
-    print('{} must be a number'.format(queens))
-    sys.exit(1)
-
-current_solution = [0 for i in range(nqueens)]
-solutions = []
-
-
-def is_safe(test_row, test_col):
-    """Checks if it is safe to place a queen"""
-    # no need to check for row 0
-    if test_row == 0:
-        return True
-
-    for row in range(0, test_row):
-        # Check vertical
-        if test_col == current_solution[row]:
+def is_safe(board, row, col):
+    for i in range(row):
+        if board[i] == col or abs(board[i] - col) == abs(i - row):
             return False
-
-        # diagonal
-        if abs(test_row - row) == abs(test_col - current_solution[row]):
-            return False
-
-    # no attack found
     return True
 
 
-def place_queen(row):
-    global current_solution, solutions, nqueens
+def place_queen(N):
+    board = [[j for j in range(N)] for i in range(N)]
 
-    for col in range(nqueens):
-        if not is_safe(row, col):
-            continue
-        else:
-            current_solution[row] = col
-            if row == (nqueens - 1):
-                # last row
-                solutions.append(current_solution.copy())
-            else:
-                place_queen(row + 1)
+    solutions = []
+
+    def back_track(row):
+        if row == N:
+            solutions.append([[i, board[i]] for i in range(N)])
+            return
+        for col in range(N):
+            if is_safe(board, row, col):
+                board[row] = col
+                back_track(row + 1)
+                board[row] = -1
+    back_track(0)
+    return solutions
 
 
-place_queen(0)
-for solution in solutions:
-    print(solution)
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print('Usage: nqueens N')
+        sys.exit(1)
+
+    try:
+        N = int(sys.argv[1])
+        if N < 4:
+            print('{} must be a number'.format(N))
+            sys.exit(1)
+    except ValueError:
+        print('{} must be a number'.format(N))
+        sys.exit(1)
+    solutions = place_queen(N)
+    for solution in solutions:
+        print(solution)
