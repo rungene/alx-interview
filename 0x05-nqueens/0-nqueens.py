@@ -21,11 +21,13 @@ def place_queen(N):
         if row == N:
             solutions.append([[i, board[i]] for i in range(N)])
             return
+
         for col in range(N):
             if is_safe(board, row, col):
                 board[row] = col
                 back_track(row + 1)
                 board[row] = -1
+
     back_track(0)
     return solutions
 
@@ -37,12 +39,14 @@ if __name__ == '__main__':
 
     try:
         N = int(sys.argv[1])
-        if N < 4:
-            print('{} must be a number'.format(N))
-            sys.exit(1)
     except ValueError:
         print('{} must be a number'.format(N))
         sys.exit(1)
+
+    if N < 4:
+        print('{} must be a number'.format(N))
+        sys.exit(1)
+
     solutions = place_queen(N)
     for solution in solutions:
         print(solution)
