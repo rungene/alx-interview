@@ -40,11 +40,11 @@ if __name__ == '__main__':
     try:
         N = int(sys.argv[1])
     except ValueError:
-        print('{} must be a number'.format(N))
+        print('N must be a number')
         sys.exit(1)
 
     if N < 4:
-        print('{} must be a number'.format(N))
+        print('N must be at least 4')
         sys.exit(1)
 
     solutions = place_queen(N)
