@@ -4,21 +4,22 @@
 """
 
 
-def is_prime(num):
-    """Checks if number is prime
+def find_prime(num):
+    """uses the Sieve of Eratosthenes algorithm to efficiently
+    generate a list of prime numbers up to a given number
     Args:
-        Number to check
+        Number up to which to generate prime numbers
     Returns:
-        True if the number is prime, false if not
+        List of prime numbers
     """
-    if num <= 1:
-        return False
-    if num == 2:
-        return True
-    for i in range(2, int(num ** 0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
+    sieve = [True] * (num + 1)
+    sieve[0] = sieve[1] = False
+    for i in range(2, int(pow(num, 0.5)) + 1):
+        if sieve[i]:
+            for j in range(i * i, num + 1, i):
+                sieve[j] = False
+    prime_nums = [i for i in range(2, num + 1) if sieve[i]]
+    return prime_nums
 
 
 def isWinner(x, nums):
@@ -37,26 +38,19 @@ def isWinner(x, nums):
     """
     if not nums or x <= 0:
         return None
-
-    def game_round(nums):
-        for num in sorted(nums):
-            if is_prime(num):
-                return num
-        return None
-    maria = 0
-    ben = 0
-    for _ in range(x):
-        chosen_num = game_round(nums)
-        if not chosen_num:
-            return None
-        nums = [num for num in nums if num % chosen_num != 0]
-        if _ % 2 == 0:
-            maria += 1
-        else:
+    maria = ben = 0
+    for i in range(x):
+        if nums[i] == 0:
+            continue
+        count = len(find_prime(nums[i]))
+        if (count % 2) == 0:
             ben += 1
+        else:
+            maria += 1
+
     if maria > ben:
-        return 'Winner: Maria'
+        return 'Maria'
     elif maria < ben:
-        return 'Winner: Ben'
+        return 'Ben'
     else:
         return None
